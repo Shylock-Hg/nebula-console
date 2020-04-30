@@ -126,6 +126,7 @@ func (t *Terminal) ioloop() {
 		isEscape       bool
 		isEscapeEx     bool
 		expectNextChar bool
+		backSlash      bool
 	)
 
 	buf := bufio.NewReader(t.getStdin())
@@ -141,6 +142,9 @@ func (t *Terminal) ioloop() {
 		}
 		expectNextChar = false
 		r, _, err := buf.ReadRune()
+		if r == CharBackSlash {
+			backSlash = true
+		}
 		if err != nil {
 			if strings.Contains(err.Error(), "interrupted system call") {
 				expectNextChar = true
@@ -188,10 +192,15 @@ func (t *Terminal) ioloop() {
 			}
 			isEscape = true
 		case CharInterrupt, CharEnter, CharCtrlJ, CharDelete:
-			//expectNextChar = false
+			if !backSlash && r == CharEnter {
+				expectNextChar = false
+			}
 			fallthrough
 		default:
 			t.outchan <- r
+		}
+		if r != CharBackSlash {
+			backSlash = false
 		}
 	}
 
