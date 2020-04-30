@@ -256,6 +256,7 @@ func (o *Operation) ioloop() {
 					o.buf.Clean()
 					data = o.buf.Reset()
 				}
+				// clean the '\<CR>`
 				var clean [] rune
 				for i := 0; i < len(data); i += 1 {
 					if data[i] == CharBackSlash && i != len(data) - 1 && data[i+1] == '\n' {
