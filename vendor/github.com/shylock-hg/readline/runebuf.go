@@ -441,7 +441,7 @@ func (r *RuneBuffer) idxLine(width int) int {
 	}
 	var buf []rune
 	buf = append(buf, r.prompt()...)
-	buf = append(buf, r.buf...)
+	buf = append(buf, r.buf[:r.idx]...)
 	line := 0
     for _, r := range buf {
 		if r == '\n' {
