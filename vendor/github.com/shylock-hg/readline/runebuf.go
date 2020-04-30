@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"log"
 )
 
 type runeBufferBck struct {
@@ -437,17 +436,19 @@ func (r *RuneBuffer) IdxLine(width int) int {
 }
 
 func (r *RuneBuffer) idxLine(width int) int {
-	//if width == 0 {
-		//return 0
-	//}
-	//sp := r.getSplitByLine(r.buf)
+	if width == 0 {
+		return 0
+	}
+	var buf []rune
+	buf = append(buf, r.prompt()...)
+	buf = append(buf, r.buf...)
 	line := 0
-    for _, r := range r.buf {
+    for _, r := range buf {
 		if r == '\n' {
 			line += 1
 		}
 	}
-	return line + 1
+	return line
 }
 
 func (r *RuneBuffer) CursorLineCount() int {
@@ -498,20 +499,13 @@ func (r *RuneBuffer) output() []byte {
 		}
 
 	} else {
-//		a := bytes.NewBuffer(nil)
 		for _, e := range r.cfg.Painter.Paint(r.buf, r.idx) {
 			if e == '\t' {
 				buf.WriteString(strings.Repeat(" ", TabWidth))
-				//a.WriteString(strings.Repeat(" ", TabWidth))
-			//} else if e == '\n' {
-				//a.Reset()
 			} else {
 				buf.WriteRune(e)
-				//a.WriteRune(e)
 			}
 		}
-		//lines := bytes.Split([]byte("\n"), a.Bytes())
-		//buf.Write(lines[len(lines) - 1])
 		if r.isInLineEdge() {
 			buf.Write([]byte(" \b"))
 		}
@@ -605,11 +599,10 @@ func (r *RuneBuffer) SetPrompt(prompt PromptFunc) {
 func (r *RuneBuffer) cleanOutput(w io.Writer, idxLine int) {
 	buf := bufio.NewWriter(w)
 
-	log.Print("DEBUG POINT ", idxLine)
-	//if r.width == 0 {
-		//buf.WriteString(strings.Repeat("\r\b", len(r.buf)+r.promptLen()))
-		//buf.Write([]byte("\033[J"))
-	//} else {
+	if r.width == 0 {
+		buf.WriteString(strings.Repeat("\r\b", len(r.buf)+r.promptLen()))
+		buf.Write([]byte("\033[J"))
+	} else {
 		buf.Write([]byte("\033[J")) // just like ^k :)
 		if idxLine == 0 {
 			buf.WriteString("\033[2K")
@@ -620,7 +613,7 @@ func (r *RuneBuffer) cleanOutput(w io.Writer, idxLine int) {
 			}
 			io.WriteString(buf, "\033[2K\r")
 		}
-	//}
+	}
 	buf.Flush()
 	return
 }
