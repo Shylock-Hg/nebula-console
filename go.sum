@@ -3,3 +3,5 @@ github.com/shylock-hg/nebula-go2.0 v0.0.0-20200429074323-6e99c9626d70 h1:qiKJlyL
 github.com/shylock-hg/nebula-go2.0 v0.0.0-20200429074323-6e99c9626d70/go.mod h1:bmTSe/YsGXWW2ULQwVaQVLcX+sSHBqRzqrs9Ye9aziU=
 github.com/shylock-hg/readline v0.0.0-20200417063605-a7cb88257b72 h1:TYHvRiYk6MSD3aRTy4wP0xBB3Mp8gN79vCgaoCyRafQ=
 github.com/shylock-hg/readline v0.0.0-20200417063605-a7cb88257b72/go.mod h1:N8BfLU/tnxlUh3CcfOUr5aBi0vaTEJSaJljdm9TI1d4=
+golang.org/x/sys v0.0.0-20200428200454-593003d681fa h1:yMbJOvnfYkO1dSAviTu/ZguZWLBTXx4xE3LYrxUCCiA=
+golang.org/x/sys v0.0.0-20200428200454-593003d681fa/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

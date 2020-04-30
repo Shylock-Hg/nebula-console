@@ -1,0 +1,10 @@
+# github.com/facebook/fbthrift v0.0.0-20190922225929-2f9839604e25
+github.com/facebook/fbthrift/thrift/lib/go/thrift
+# github.com/shylock-hg/nebula-go2.0 v0.0.0-20200429074323-6e99c9626d70
+github.com/shylock-hg/nebula-go2.0
+github.com/shylock-hg/nebula-go2.0/nebula
+github.com/shylock-hg/nebula-go2.0/nebula/graph
+# github.com/shylock-hg/readline v0.0.0-20200417063605-a7cb88257b72
+github.com/shylock-hg/readline
+# golang.org/x/sys v0.0.0-20200428200454-593003d681fa
+golang.org/x/sys/unix
