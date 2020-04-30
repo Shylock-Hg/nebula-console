@@ -188,7 +188,7 @@ func (t *Terminal) ioloop() {
 			}
 			isEscape = true
 		case CharInterrupt, CharEnter, CharCtrlJ, CharDelete:
-			expectNextChar = false
+			//expectNextChar = false
 			fallthrough
 		default:
 			t.outchan <- r

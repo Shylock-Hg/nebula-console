@@ -105,10 +105,14 @@ func (o *Operation) GetConfig() *Config {
 }
 
 func (o *Operation) ioloop() {
+	backSlash := false
 	for {
 		keepInSearchMode := false
 		keepInCompleteMode := false
 		r := o.t.ReadRune()
+		if r == CharBackSlash {
+			backSlash = true
+		}
 		if o.GetConfig().FuncFilterInputRune != nil {
 			var process bool
 			r, process = o.GetConfig().FuncFilterInputRune(r)
@@ -238,25 +242,39 @@ func (o *Operation) ioloop() {
 		case CharCtrlY:
 			o.buf.Yank()
 		case CharEnter, CharCtrlJ:
-			if o.IsSearchMode() {
-				o.ExitSearchMode(false)
-			}
-			o.buf.MoveToLineEnd()
-			var data []rune
-			if !o.GetConfig().UniqueEditLine {
-				o.buf.WriteRune('\n')
-				data = o.buf.Reset()
-				data = data[:len(data)-1] // trim \n
+			if (!backSlash) {
+				if o.IsSearchMode() {
+					o.ExitSearchMode(false)
+				}
+				o.buf.MoveToLineEnd()
+				var data []rune
+				if !o.GetConfig().UniqueEditLine {
+					o.buf.WriteRune('\n')
+					data = o.buf.Reset()
+					data = data[:len(data)-1] // trim \n
+				} else {
+					o.buf.Clean()
+					data = o.buf.Reset()
+				}
+				var clean [] rune
+				for i := 0; i < len(data); i += 1 {
+					if data[i] == CharBackSlash && i != len(data) - 1 && data[i+1] == '\n' {
+						i += 1
+					} else {
+						clean = append(clean, data[i])
+					}
+				}
+				o.outchan <- clean
+				if !o.GetConfig().DisableAutoSaveHistory {
+					// ignore IO error
+					_ = o.history.New(data)
+				} else {
+					isUpdateHistory = false
+				}
 			} else {
-				o.buf.Clean()
-				data = o.buf.Reset()
-			}
-			o.outchan <- data
-			if !o.GetConfig().DisableAutoSaveHistory {
-				// ignore IO error
-				_ = o.history.New(data)
-			} else {
-				isUpdateHistory = false
+				if r == CharEnter {
+					o.buf.WriteRune('\n')
+				}
 			}
 		case CharBackward:
 			o.buf.MoveBackward()
@@ -360,6 +378,10 @@ func (o *Operation) ioloop() {
 			o.history.Update(o.buf.Runes(), false)
 		}
 		o.m.Unlock()
+
+		if r != CharBackSlash {
+			backSlash = false
+		}
 	}
 }
 

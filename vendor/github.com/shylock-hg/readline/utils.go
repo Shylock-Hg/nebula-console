@@ -42,6 +42,7 @@ const (
 	CharCtrlZ     = 26
 	CharEsc       = 27
 	CharEscapeEx  = 91
+	CharBackSlash = 92
 	CharBackspace = 127
 )
 
